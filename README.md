@@ -4,7 +4,9 @@ The marcov chain algorithm used is essentially what is described in https://drmy
 
 # Dependencies
 Boot >= 1.61.0
+
 OpenSSL >= 1.1
+
 zlib
 
 # Installation in Ubuntu enviornment
