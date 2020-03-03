@@ -9,10 +9,12 @@ OpenSSL >= 1.1
 
 zlib
 
+cmake >= 3.13.4
+
 # Installation in Ubuntu environment
 Gather Dependencies:
 
-  `sudo apt install libboost-all-dev openssl zlib1g`
+  `sudo apt install libboost-all-dev openssl zlib1g cmake`
   
 Clone the repository
 
