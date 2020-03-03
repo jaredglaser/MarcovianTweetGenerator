@@ -12,7 +12,7 @@ zlib
 # Installation in Ubuntu enviornment
 Gather Dependencies:
 
-  sudo apt install libboost-all-dev openssl zlib1g
+  `sudo apt install libboost-all-dev openssl zlib1g`
   
 Clone the repository
 
