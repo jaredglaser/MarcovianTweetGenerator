@@ -9,7 +9,7 @@ OpenSSL >= 1.1
 
 zlib
 
-# Installation in Ubuntu enviornment
+# Installation in Ubuntu environment
 Gather Dependencies:
 
   `sudo apt install libboost-all-dev openssl zlib1g`
