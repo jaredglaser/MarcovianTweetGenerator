@@ -63,13 +63,18 @@ class MarcovChain{
                     
                     //iterate through all of the values of the current word to see if the next word is already in there.
                     bool wordFound = false;
-                    map<string,vector<MarcovWord>>::iterator iter; //TODO: end is being added to the first thing in the map. this is wrong i need to actually add it in the right place lmao
+                    /*
+                    //old... prob slow
+                    map<string,vector<MarcovWord>>::iterator iter; 
                     for(iter = marcovDict.begin(); iter != marcovDict.end(); iter++){
                         if(!(*iter).first.compare(currentWord)){ //find the key that we want to add the value to
                             addToKey(nextWord,(*iter).second);
                             break;
                         }
                     }
+                    */
+                   //new test way
+                   addToKey(nextWord,marcovDict.find(currentWord)->second);
                     
                 }
             }
@@ -90,8 +95,9 @@ class MarcovChain{
         }
 
         void chooseNextWord(string &nextWord, const vector<MarcovWord> &words){
-            int r = rand() % 100;
+            int r = rand() % 10000 + 1;
             int prob = words[0].prob;
+            cout << to_string(prob) + "... ";
             for(int i = 0; i < words.size()-1;i++){
                 if(r <= words[i].prob){
                     nextWord = words[i].word;
@@ -99,6 +105,7 @@ class MarcovChain{
                 }
                 prob += words[i+1].prob;
             }
+            cout<< to_string(prob) + ": " + words[words.size()-1].word << endl;
             nextWord = words[words.size()-1].word;
         }
 
@@ -112,7 +119,7 @@ class MarcovChain{
                 
                 for(int i = 0; i < (*iter).second.size(); i++){
                     //truncated to a int probability... may cause problems if there are large numbers of words following...
-                    double probability = ((*iter).second[i].count / (double)totalCount) * 100;
+                    double probability = ((*iter).second[i].count / (double)totalCount) * 10000;
                     (*iter).second[i].prob = (int)(probability);
                     string theword = (*iter).second[i].word;
                 }
@@ -145,7 +152,7 @@ int main(){
     //advance(iter,randNum);
     string currentWord(1000,' '); 
     testingChain.chooseNextWord(currentWord,(*iter).second);
-    cout << " " + currentWord + " ";
+    //cout << " " + currentWord + " ";
     for(int i=0; i < 10000; i++){
         if((*testingChain.getChain()).find(currentWord) == (*testingChain.getChain()).end()){
             //we got to the end... stop
@@ -153,7 +160,7 @@ int main(){
         }
         map<string,vector<MarcovWord>>::iterator it = (*testingChain.getChain()).find(currentWord);
         testingChain.chooseNextWord(currentWord,(*it).second);
-        cout << " " + currentWord + " ";
+        //cout << " " + currentWord + " ";
     }
 
     return 0;
