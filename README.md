@@ -14,7 +14,7 @@ cmake >= 3.13.4
 # Installation in Ubuntu environment
 Gather Dependencies:
 
-  `sudo apt install libboost-all-dev openssl zlib1g cmake`
+  `sudo apt install libboost-all-dev libssl-dev zlib1g cmake`
   
 Clone the repository
 
