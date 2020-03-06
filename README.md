@@ -7,30 +7,34 @@ Boost >= 1.61.0
 
 OpenSSL >= 1.1
 
-zlib
-
 cmake >= 3.13.4
 
 # Installation in Ubuntu environment
 
 Gather Dependencies:
 
-  `sudo apt install libboost-all-dev libssl-dev zlib1g cmake`
+  `sudo apt install libboost-all-dev libssl-dev cmake libcurl4-gnutls-dev`
   
 Clone this Repository:
 
   `git clone https://github.com/jaredglaser/MarcovianTweetGenerator`
   
-Clone the Twitter API Repo:
+Clone the Twitter API Repo: I'm using Ryan Geary's fork that allows me to get the extended versions of the tweets.
 
-  `git clone github.com/a-n-t-h-o-n-y/Twitter-API-C-Library`
+  `git clone https://github.com/theryangeary/twitcurl.git`
   
 Make the Twitter API Repo:
 
-  `cd Twitter-API-C-Library`
+  `cd twitcurl/libtwitcurl`
   
-  `cmake .`
+  `sudo make`
   
+  `sudo cp libtwitcurl.so.1.0 /usr/lib/libtwitcurl.so`
+  
+You may also have to place the directory called /include/curl in /usr/include
+
+  'sudo cp /include/curl /usr/include'
+ 
 Go back to the clone of this Repo, make it, then run it:
 
   `cd ..\MarcovianTweetGenerator`
@@ -38,5 +42,11 @@ Go back to the clone of this Repo, make it, then run it:
   `make`
   
   `./a.out`
+  
+If you get an error about it not being able to see the library files. Try running this command:
+
+`sudo /sbin/ldconfig -v`
+
+This should update ld so it can find the shared libraries that you have moved into /usr/lib
   
 
