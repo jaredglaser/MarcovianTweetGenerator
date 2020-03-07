@@ -6,12 +6,16 @@
             "command": "/usr/bin/g++",
             "args": [
                 "-g",
-                "${file}",
                 "-o",
-                "${fileDirname}/${fileBasenameNoExtension}"
+                "a.out",
+                "main.cpp",
+                "-L/usr/local/lib/",
+                "-lboost_filesystem",
+                "-L/usr/local/lib",
+                "-ltwitcurl"
             ],
             "options": {
-                "cwd": "/usr/bin"
+                "cwd": "/home/jared/MarcovianTweetGenerator/"
             }
         }
     ],

@@ -6,6 +6,8 @@
         "string": "cpp",
         "unordered_map": "cpp",
         "vector": "cpp",
-        "iosfwd": "cpp"
+        "iosfwd": "cpp",
+        "bitset": "cpp",
+        "sstream": "cpp"
     }
 }
