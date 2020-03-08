@@ -7,6 +7,7 @@
 #include <fstream>
 #include <random>
 #include <boost/tokenizer.hpp>
+#include <boost/range/adaptor/reversed.hpp>
 #include <twitcurl.h>
 #include <oauthlib.h>
 #include "json.hpp"
@@ -37,13 +38,6 @@ template<> struct less<MarcovWord>
 };
 }
 
-// struct marcovWordComparator{
-//     bool operator()(const marcovWord& first,const marcovWord& second)
-//                 {
-//                     return first.word.compare(second.word)==0 ? true : false ;
-//                 }
-// };
-
 class MarcovChain{
     private: 
         map<string,vector<MarcovWord>> marcovDict;
@@ -66,21 +60,11 @@ class MarcovChain{
                 if(marcovDict.count(currentWord) == 0){ //the word does not yet exist, add it!
                     marcovDict.emplace(currentWord,vector<MarcovWord> {nextWord});
                 }
-                else{ //it already exists
-                    
+                else{ //it already exists    
                     //iterate through all of the values of the current word to see if the next word is already in there.
                     bool wordFound = false;
-                    /*
-                    //old... prob slow
-                    map<string,vector<MarcovWord>>::iterator iter; 
-                    for(iter = marcovDict.begin(); iter != marcovDict.end(); iter++){
-                        if(!(*iter).first.compare(currentWord)){ //find the key that we want to add the value to
-                            addToKey(nextWord,(*iter).second);
-                            break;
-                        }
-                    }
-                    */
-                   //new test way
+                   //add the work to the values for the key if it is not already in the list of values. Otherwise, iterate the count by 1 for
+                   //the probability calculator later.
                    addToKey(nextWord,marcovDict.find(currentWord)->second);
                     
                 }
@@ -90,14 +74,18 @@ class MarcovChain{
         }
 
         void addToKey(MarcovWord word, vector<MarcovWord> &words){
+            bool found = false;
             for(int j = 0; j < words.size(); j++){
                             MarcovWord element = words[j];
                             if(!element.word.compare(word.word)){ 
                                 //if they match then add 1 to the count
-                                element.count++;
+                                words[j].count++;
+                                found = true;
                             }
                         }
+                        if(!found){
                         words.push_back(word);
+                        }
                         
         }
 
@@ -140,9 +128,7 @@ class MarcovChain{
             while(ss >> buffer){
                 words.push_back(buffer);
             }
-        }
-
-        
+        }        
 };
 
 void printUsage()
@@ -151,16 +137,8 @@ void printUsage()
 }
 
 int main(int argc, char* argv[]){
-
-    /*
-    //handle opening the file holding the text
-    ifstream inputFile;
-    inputFile.open("fullfile.txt");
-    stringstream strStream;
-    strStream << inputFile.rdbuf();
-    */
-
-        /* Get username and password from command line args */
+    srand(time(NULL));
+    /* Get username and password from command line args */
     std::string userName( "" );
     std::string passWord( "" );
     if( argc > 4 )
@@ -197,37 +175,8 @@ int main(int argc, char* argv[]){
     twitterObj.setTwitterUsername( userName );
     twitterObj.setTwitterPassword( passWord );
 
-    /* Set proxy server usename, password, IP and port (if present) */
+    /* buffer to be used for fgets later */
     memset( tmpBuf, 0, 1024 );
-    printf( "\nDo you have a proxy server configured (0 for no; 1 for yes): " );
-    fgets( tmpBuf, sizeof( tmpBuf ), stdin );
-    tmpStr = tmpBuf;
-    if( std::string::npos != tmpStr.find( "1" ) )
-    {
-        memset( tmpBuf, 0, 1024 );
-        printf( "\nEnter proxy server IP: " );
-        fgets( tmpBuf, sizeof( tmpBuf ), stdin );
-        tmpStr = tmpBuf;
-        twitterObj.setProxyServerIp( tmpStr );
-
-        memset( tmpBuf, 0, 1024 );
-        printf( "\nEnter proxy server port: " );
-        fgets( tmpBuf, sizeof( tmpBuf ), stdin );
-        tmpStr = tmpBuf;
-        twitterObj.setProxyServerPort( tmpStr );
-
-        memset( tmpBuf, 0, 1024 );
-        printf( "\nEnter proxy server username: " );
-        fgets( tmpBuf, sizeof( tmpBuf ), stdin );
-        tmpStr = tmpBuf;
-        twitterObj.setProxyUserName( tmpStr );
-
-        memset( tmpBuf, 0, 1024 );
-        printf( "\nEnter proxy server password: " );
-        fgets( tmpBuf, sizeof( tmpBuf ), stdin );
-        tmpStr = tmpBuf;
-        twitterObj.setProxyPassword( tmpStr );
-    }
 
     /* OAuth flow begins */
     /* Step 0: Set OAuth related params. These are got by registering your app at twitter.com */
@@ -326,15 +275,20 @@ int main(int argc, char* argv[]){
         printf( "\ntwitterClient:: twitCurl::accountVerifyCredGet error:\n%s\n", replyMsg.c_str() );
     }
 
-    //Get all of Donald Trump's tweets
-    if(twitterObj.timelineUserGet(true,false,200,"25073877",true,true)){
+    //Get all of the tweets by handle
+    int numtweets = 0;
+    stringstream tweets;
+    while(numtweets == 0){
+    printf( "\nEnter a twitter handle...\n" );
+    fgets( tmpBuf, sizeof( tmpBuf ), stdin );
+    strtok(tmpBuf, "\n");
+    tmpStr = tmpBuf;
+    printf("Searching for tweets by user %s \n",tmpStr.c_str());
+    if(twitterObj.timelineUserGet(true,false,200,tmpStr,false,true)){
         twitterObj.getLastWebResponse( replyMsg );
-            //printf( "\nList of Tweets: %s\n", replyMsg.c_str() );
     }
 
     //Now tokenize them and add the strings to a stringstream.
-    int numtweets = 0;
-    stringstream tweets;
     nlohmann::json tweetjson = nlohmann::json::parse(replyMsg);
     bool first = true;
     for (nlohmann::json::iterator it = tweetjson.begin(); it != tweetjson.end(); ++it) {
@@ -357,12 +311,16 @@ int main(int argc, char* argv[]){
             ++numtweets;
         }
     }
-    cout<< tweets.str() << endl << endl;
+    if(numtweets == 0){
+        printf("\n ERROR: Twitter account not found or user has no tweets");
+    }
+    else if(numtweets < 30){
+        printf("\n WARNING: User has only a few tweets. Algorithm is less reliable with smaller numbers of tweets.");
+    }
+    }
+    cout << "\n Here is your generated tweet...\n";
 
-    cout << "Here is your generated tweet...\n";
-
-    //seed the number and begin...
-    srand(time(NULL));
+    //begin generating the chain...
     MarcovChain testingChain = MarcovChain(tweets.str());
     //Only do it once for now, expandable in the future...
     bool acceptable = false;
@@ -389,24 +347,24 @@ int main(int argc, char* argv[]){
     }
 
     //now trim it down intelligently to 280 characters
-    boost::char_separator<char> sep(" ");
-    boost::tokenizer<boost::char_separator<char>> tokens(tweet.str(), sep);
-    for (const auto& t : tokens) {
-        if(tweet.str().length()+ string(" ").length() + t.length()<280){
-        //tweet << t + " ";
-        cout << t << endl;
+    string trimmedTweet = tweet.str().substr(0,180);
+    int count = 0;
+    for(char letter : boost::adaptors::reverse(trimmedTweet)){
+        if(letter != ' '){
+            count++;
         }
         else{
             break;
         }
     }
+    trimmedTweet = trimmedTweet.substr(0,180-count);
 
 
-    tweet << endl;
+    trimmedTweet += "\n";
 
 
 
-    cout << tweet.str();
+    cout << trimmedTweet;
     //make sure the tweet is good via user input
     printf( "\nGenerate a different tweet? (y/n)" );
     fgets( tmpBuf, sizeof( tmpBuf ), stdin );
@@ -418,10 +376,7 @@ int main(int argc, char* argv[]){
     else{
         tweet.str(string());
     }
-
     }
-    
-
     return 0;
 }
 
