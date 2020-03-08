@@ -7,7 +7,7 @@ Boost >= 1.61.0
 
 OpenSSL >= 1.1
 
-cmake >= 3.13.4
+Ryan Geary's fork of twitcurl (https://github.com/theryangeary/twitcurl)
 
 # Installation in Ubuntu environment
 
@@ -23,12 +23,14 @@ Clone the Twitter API Repo: I'm using Ryan Geary's fork that allows me to get th
 
   `git clone https://github.com/theryangeary/twitcurl.git`
   
-Make the Twitter API Repo:
+Make twitcurl:
 
   `cd twitcurl/libtwitcurl`
   
   `sudo make`
   
+Move the library file to /usr/lib/. You may have to copy it as both libtwitcurl.so and libtwitcurl.so.1
+
   `sudo cp libtwitcurl.so.1.0 /usr/lib/libtwitcurl.so`
   
 You may also have to place the directory called /include/curl in /usr/include
