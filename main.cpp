@@ -133,6 +133,7 @@ void printUsage() {
 }
 
 int main(int argc, char * argv[]) {
+  bool fileMode = false;
   srand(time(NULL));
   /* Get username and password from command line args */
   std::string userName("");
@@ -254,9 +255,18 @@ int main(int argc, char * argv[]) {
     printf("\ntwitterClient:: twitCurl::accountVerifyCredGet error:\n%s\n", replyMsg.c_str());
   }
 
+  //ask if they want to use legacy mode (read from a file)
+    
+    printf("\nSelect tweet generation mode (0 for username; 1 for file)");
+    fgets(tmpBuf, sizeof(tmpBuf), stdin);
+    tmpStr = tmpBuf;
+    if (std::string::npos != tmpStr.find("1")) {
+      fileMode = true;
+    }
+    stringstream tweets;
+    if(!fileMode){
   //Get all of the tweets by handle
   int numtweets = 0;
-  stringstream tweets;
   while (numtweets == 0) {
     printf("\nEnter a twitter handle...\n");
     fgets(tmpBuf, sizeof(tmpBuf), stdin);
@@ -295,6 +305,18 @@ int main(int argc, char * argv[]) {
       printf("\n WARNING: User has only a few tweets. Algorithm is less reliable with smaller numbers of tweets.");
     }
   }
+    }
+    else{
+        ifstream textfile ("input.txt");
+        if(textfile){
+        tweets << textfile.rdbuf();
+        textfile.close();
+        }
+        else{
+            printf("\n ERROR: input.txt not found or permissions are not set properly.\n");
+            return 0;
+        }
+    }
   cout << "\n Here is your generated tweet...\n";
 
   //begin generating the chain...
