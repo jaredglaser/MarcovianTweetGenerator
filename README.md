@@ -46,7 +46,7 @@ Move the library file to /usr/lib/. You may have to copy it as both libtwitcurl.
 
   `sudo cp libtwitcurl.so.1.0 /usr/lib/libtwitcurl.so`
   
-You may also have to place the directory called /include/curl in /usr/include
+You may also have to place the directory in twitcurl/libtwitcurl called include/curl in /usr/include
 
   `sudo cp -r include/curl /usr/include`
   
