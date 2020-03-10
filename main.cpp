@@ -7,8 +7,8 @@
 #include <fstream>
 #include <random>
 #include <boost/range/adaptor/reversed.hpp>
-#include <twitcurl.h>
-#include <oauthlib.h>
+#include "twitcurl.h"
+#include "oauthlib.h"
 #include "json.hpp"
 #include <regex>
 
