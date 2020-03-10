@@ -42,7 +42,7 @@ Make twitcurl:
   
   `sudo make`
   
-Move the library file to /usr/lib/. You may have to copy it as both libtwitcurl.so and libtwitcurl.so.1
+Move the library file to /usr/lib/. 
 
   `sudo cp libtwitcurl.so.1.0 /usr/lib/libtwitcurl.so`
   
