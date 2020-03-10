@@ -48,7 +48,7 @@ Move the library file to /usr/lib/. You may have to copy it as both libtwitcurl.
   
 You may also have to place the directory called /include/curl in /usr/include
 
-  'sudo cp -r include/curl /usr/include'
+  `sudo cp -r include/curl /usr/include`
   
 Update the linker so that it can find the new library files we just put into /usr/lib
 
@@ -56,17 +56,12 @@ Update the linker so that it can find the new library files we just put into /us
  
 Go back to the clone of this Repo, make it, then run it:
 
-  `cd ../../MarcovianTweetGenerator`ls
+  `cd ../../MarcovianTweetGenerator`
   
   
   `make`
   
   `./a.out -u twitteremail@email.com -p yourtwitterpassword`
-  
-If you get an error about it not being able to see the library files. Try running this command:
-
-`sudo /sbin/ldconfig -v`
-
-This should update ld so it can find the shared libraries that you have moved into /usr/lib
+ 
   
 
