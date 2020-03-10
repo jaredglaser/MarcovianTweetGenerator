@@ -2,7 +2,7 @@
 
 The marcov chain algorithm used is essentially what is described in https://drmysterian.com/how-to-code-a-python-markov-chain-text-generator/, but using a map with a word as the key and a vector holding the possible next words with their probabilities. The program picks a random word to start with and then chooses a random number and compares it against the probabilites of each of the possible next words. Whichever next word is chosen by the random number is then located in the map... this will loop until the full tweet is formed.
 
-#Twitter Handle VS File
+# Twitter Handle VS File
 
 This can take data from either a file or from a twitter handle. 
 
