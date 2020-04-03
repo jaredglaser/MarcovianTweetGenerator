@@ -18,6 +18,8 @@ Make
 
 OpenSSL >= 1.1
 
+Curl
+
 Ryan Geary's fork of twitcurl (https://github.com/theryangeary/twitcurl)
 
 # Installation in Ubuntu environment (tested on Amazon EC2 Ubuntu 18.04)
